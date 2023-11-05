@@ -68,7 +68,9 @@ const HistoryModal = (props: HistoryModalProps) => {
         colors={['#6A7460', '#131111']}
         className="flex h-full justify-start items-center pt-[120px] px-4">
         <StyledBox className="flex w-full text-left pb-20">
-          <StyledText className="text-white text-5xl">Odyssey</StyledText>
+          <StyledText className="text-white text-5xl font-semibold">
+            Odyssey
+          </StyledText>
         </StyledBox>
         <StyledBox className="flex w-full text-white/40 text-sm tracking-[1.12px]">
           <StyledHStack className="justify-between border-b border-white/20 pb-4">

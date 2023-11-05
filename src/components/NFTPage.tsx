@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {StyleSheet, Modal} from 'react-native';
-import {VStack, Spinner, Image, Button, Text, Box} from '@gluestack-ui/themed';
+import {StyleSheet} from 'react-native';
+import {VStack, Spinner, Button, Text, Box} from '@gluestack-ui/themed';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import {ethers} from 'ethers';
@@ -13,7 +13,6 @@ import HistoryModal from './HistoryModal';
 const NFTPage = () => {
   const StyledBox = styled(Box);
   const StyledBg = styled(LinearGradient);
-  const StyledModal = styled(Modal);
   const StyledText = styled(Text);
   const provider = new ethers.providers.JsonRpcProvider(
     'https://eth-goerli.g.alchemy.com/v2/rF-18JXiZ8TUtMsk0VUI1ppUq6gDzt9m',
@@ -58,7 +57,7 @@ const NFTPage = () => {
     <VStack justifyContent="center" alignItems="center">
       {NFTSection()}
       <Button onPress={() => setShowModal(true)} ref={ref}>
-        {/* <ButtonText>Show Modal</ButtonText> */}
+        <Text>Show Modal</Text>
       </Button>
       <HistoryModal showModal={showModal} setShowModal={setShowModal} />
     </VStack>
