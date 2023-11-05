@@ -73,7 +73,7 @@ const LoginScreen = ({navigation}: any) => {
       </StyledText>
       <StyledButton
         className="bg-white rounded-lg h-[61px] absolute bottom-10 w-[90%]"
-        onPress={() => navigation.navigate('NFT')}>
+        onPress={() => navigation.navigate('home')}>
         <StyledText className="text-black text-base">Sign in</StyledText>
       </StyledButton>
     </StyledBox>
