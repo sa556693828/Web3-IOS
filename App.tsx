@@ -1,11 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {StyleSheet, useColorScheme, View} from 'react-native';
 import './shim';
 import {GluestackUIProvider, Text} from '@gluestack-ui/themed';
@@ -16,8 +9,9 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import IndexScreen from './src/screens/IndexScreen';
 import NFTScreen from './src/screens/NFTScreen';
-import AnimationScreen from './src/screens/AnimationScreen';
 import LoginScreen from './src/screens/LoginScreen';
+import GalleryScreen from './src/screens/GalleryScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 
 const StyledView = styled(Text);
 const Stack = createStackNavigator();
@@ -56,11 +50,16 @@ function App(): JSX.Element {
             component={NFTScreen}
             options={headerOptions as any}
           />
-          {/* <Stack.Screen
-            name="Animation"
-            component={AnimationScreen}
-            options={headerOptions}
-          /> */}
+          <Stack.Screen
+            name="Gallery"
+            component={GalleryScreen}
+            options={headerOptions as any}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={headerOptions as any}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </GluestackUIProvider>
