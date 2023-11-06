@@ -1,26 +1,20 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {StyleSheet} from 'react-native';
-import {
-  VStack,
-  Spinner,
-  Button,
-  Text,
-  Box,
-  ScrollView,
-} from '@gluestack-ui/themed';
+import {VStack, Spinner, Button, Text, Box} from '@gluestack-ui/themed';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import {ethers} from 'ethers';
 import finalNFT from '../abi/finalNFT.json';
 import axios from 'axios';
 import {styled} from 'nativewind';
-import LinearGradient from 'react-native-linear-gradient';
 import HistoryModal from './HistoryModal';
 import {Heart, ArchiveRestore} from 'lucide-react-native';
+import Swiper from 'react-native-swiper';
 
 const NFTPage = () => {
   const StyledBox = styled(Box);
-  const StyledBg = styled(LinearGradient);
+  const StyledButton = styled(Button);
+  const StyledSwiper = styled(Swiper);
   const StyledText = styled(Text);
   const provider = new ethers.providers.JsonRpcProvider(
     'https://eth-goerli.g.alchemy.com/v2/rF-18JXiZ8TUtMsk0VUI1ppUq6gDzt9m',
@@ -82,16 +76,61 @@ const NFTPage = () => {
           </StyledText>
         </StyledBox>
       </VStack>
-      <Button onPress={() => setShowModal(true)} ref={ref}>
-        <Text>Show Modal</Text>
-      </Button>
+      <StyledSwiper
+        showsButtons={true}
+        buttonWrapperStyle={{
+          backgroundColor: 'transparent',
+          flexDirection: 'row',
+          position: 'absolute',
+          top: 28,
+          left: 0,
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+        }}
+        nextButton={
+          <StyledText className="text-white text-5xl font-thin -mr-3">
+            ›
+          </StyledText>
+        }
+        prevButton={
+          <StyledText className="text-white text-5xl font-thin -ml-3">
+            ‹
+          </StyledText>
+        }>
+        <StyledButton
+          className="justify-center items-center flex flex-col bg-transparent"
+          onPress={() => setShowModal(true)}>
+          <StyledText className="text-white uppercase tracking-[1.28px]">
+            Work shop
+          </StyledText>
+          <StyledText className="text-white pt-2 uppercase text-white/40">
+            2023-11-10
+          </StyledText>
+        </StyledButton>
+      </StyledSwiper>
+
       <HistoryModal showModal={showModal} setShowModal={setShowModal} />
     </StyledBox>
   );
 };
 const styles = StyleSheet.create({
-  box: {
-    width: '100%',
+  slide1: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#9DD6EB',
+  },
+  slide2: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#97CAE5',
+  },
+  slide3: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#92BBD9',
   },
 });
 export default NFTPage;
