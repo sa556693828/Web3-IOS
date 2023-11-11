@@ -1,17 +1,26 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useCallback, useContext} from 'react';
 import {StyleSheet} from 'react-native';
 import {VStack, Spinner, Button, Text, Box} from '@gluestack-ui/themed';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import {ethers} from 'ethers';
-import finalNFT from '../abi/finalNFT.json';
+import basic from '../abi/basic.json';
 import axios from 'axios';
 import {styled} from 'nativewind';
 import HistoryModal from './HistoryModal';
 import {Heart, ArchiveRestore} from 'lucide-react-native';
 import Swiper from 'react-native-swiper';
+import {MarketContext} from '../context/MarketProvider';
+import useUser from '../hooks/useUser';
+import useLoginAccount from '../hooks/useLoginAccount';
+import useImage from '../hooks/useImage';
 
 const NFTPage = () => {
+  const {userVid} = useContext(MarketContext);
+  const {getAccount, accountData} = useLoginAccount();
+  const {getUser, data, success} = useUser();
+  const {getImage, image} = useImage();
+
   const StyledBox = styled(Box);
   const StyledButton = styled(Button);
   const StyledSwiper = styled(Swiper);
@@ -19,20 +28,37 @@ const NFTPage = () => {
   const provider = new ethers.providers.JsonRpcProvider(
     'https://eth-goerli.g.alchemy.com/v2/rF-18JXiZ8TUtMsk0VUI1ppUq6gDzt9m',
   );
-  const contract = new ethers.Contract(
-    finalNFT.address,
-    finalNFT.abi,
-    provider,
-  );
+  const contract = new ethers.Contract(basic.address, basic.abi, provider);
   const [loading, setLoading] = useState(false);
   const [tokenURI, setTokenURI] = useState('');
+  const [tokenID, setTokenID] = useState();
   const [showModal, setShowModal] = useState(false);
-  const ref = useRef(null);
 
-  const getNFTs = async () => {
+  const getTokenID = useCallback(
+    async (address: string) => {
+      try {
+        if (!address) {
+          throw new Error('No wallet address');
+        }
+        const balance = await contract.balanceOf(address);
+        if (balance.toNumber() > 0) {
+          const tokenID = await contract.tokenOfOwnerByIndex(address, 0);
+          setTokenID(tokenID.toNumber());
+          return tokenID.toNumber();
+        } else {
+          throw new Error('Balance is zero');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [userVid],
+  );
+  const getNFTs = async (address: string) => {
     setLoading(true);
     try {
-      const tokenURI = await contract.tokenURI(0);
+      const tokenID = await getTokenID(address);
+      const tokenURI = await contract.tokenURI(tokenID);
       if (tokenURI) {
         setTokenURI(tokenURI);
         setLoading(false);
@@ -42,9 +68,18 @@ const NFTPage = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
-    getNFTs();
-  }, []);
+    getUser(userVid);
+    getAccount(userVid);
+  }, [userVid]);
+
+  useEffect(() => {
+    if (data && success && data?.wallet_address) {
+      getNFTs(data.wallet_address);
+    }
+  }, [data, success, data?.wallet_address]);
+
   const NFTSection = () => {
     if (loading) {
       return (
@@ -72,7 +107,7 @@ const NFTPage = () => {
             YOHAKU FOUNDER'S EDITION
           </StyledText>
           <StyledText className="text-white/40 tracking-[1.28px] leading-[120%] font-normal">
-            #2
+            #{tokenID}
           </StyledText>
         </StyledBox>
       </VStack>

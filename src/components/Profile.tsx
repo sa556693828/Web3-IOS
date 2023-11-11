@@ -1,12 +1,16 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import {StyleSheet} from 'react-native';
 import {VStack, Spinner, Button, Text, Box, HStack} from '@gluestack-ui/themed';
 import axios from 'axios';
 import {styled} from 'nativewind';
-import LinearGradient from 'react-native-linear-gradient';
-import {View} from '@gluestack-ui/themed';
+import {MarketContext} from '../context/MarketProvider';
+import useLoginAccount from '../hooks/useLoginAccount';
+import useUser from '../hooks/useUser';
 
 const Profile = () => {
+  const {userVid} = useContext(MarketContext);
+  const {getAccount, accountData} = useLoginAccount();
+  const {getUser, data, success} = useUser();
   const StyledBox = styled(Box);
   const StyledText = styled(Text);
   const StyledVStack = styled(VStack);
@@ -16,7 +20,12 @@ const Profile = () => {
     email: 'N',
     wallet_address: 'N',
   };
-  const textStyle = 'uppercase text-sm tracking-[1.12px] font-normal';
+  const textStyle = 'text-sm tracking-[1.12px] font-normal';
+
+  useEffect(() => {
+    getUser(userVid);
+    getAccount(userVid);
+  }, [userVid]);
 
   return (
     <StyledVStack w="$full" gap="$4" tw="flex-1">
@@ -26,7 +35,7 @@ const Profile = () => {
         </StyledText>
         <StyledBox className=" border-t border-white/20 py-4">
           <StyledText className={`${textStyle} text-white`}>
-            {userInfo.first_name}
+            {data?.first_name}
           </StyledText>
         </StyledBox>
       </VStack>
@@ -36,7 +45,7 @@ const Profile = () => {
         </StyledText>
         <StyledBox className=" border-t border-white/20 py-4">
           <StyledText className={`${textStyle} text-white`}>
-            {userInfo.account}
+            {accountData?.account}
           </StyledText>
         </StyledBox>
       </VStack>
@@ -44,7 +53,7 @@ const Profile = () => {
         <StyledText className={`${textStyle} text-white/40`}>email</StyledText>
         <StyledBox className=" border-t border-white/20 py-4">
           <StyledText className={`${textStyle} text-white`}>
-            {userInfo.email}
+            {data?.email}
           </StyledText>
         </StyledBox>
       </VStack>
@@ -54,7 +63,7 @@ const Profile = () => {
         </StyledText>
         <StyledBox className=" border-t border-white/20 py-4">
           <StyledText className={`${textStyle} text-white`}>
-            {userInfo.wallet_address}
+            {data?.wallet_address}
           </StyledText>
         </StyledBox>
       </VStack>

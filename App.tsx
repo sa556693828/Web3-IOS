@@ -11,6 +11,7 @@ import GalleryScreen from './src/screens/GalleryScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import {UserSquare, GalleryHorizontalEnd, Grid2x2} from 'lucide-react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {MarketProvider} from './src/context/MarketProvider';
 
 const Stack = createStackNavigator();
 
@@ -85,27 +86,29 @@ function App(): JSX.Element {
     );
   }
   return (
-    <GluestackUIProvider config={config}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Index">
-          <Stack.Screen
-            name="Index"
-            component={IndexScreen}
-            options={headerOptions as any}
-          />
-          <Stack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={headerOptions as any}
-          />
-          <Stack.Screen
-            name="home"
-            component={HomeTabs}
-            options={headerOptions as any}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </GluestackUIProvider>
+    <MarketProvider>
+      <GluestackUIProvider config={config}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Index">
+            <Stack.Screen
+              name="Index"
+              component={IndexScreen}
+              options={headerOptions as any}
+            />
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={headerOptions as any}
+            />
+            <Stack.Screen
+              name="home"
+              component={HomeTabs}
+              options={headerOptions as any}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </GluestackUIProvider>
+    </MarketProvider>
   );
 }
 
