@@ -2,7 +2,7 @@ import {useCallback, useContext, useState} from 'react';
 import axios from 'axios';
 
 export default function useImage() {
-  const [image, setImage] = useState<any>();
+  const [image, setImage] = useState<string>();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);

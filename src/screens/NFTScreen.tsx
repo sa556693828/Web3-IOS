@@ -32,7 +32,7 @@ const NFTScreen = ({navigation}: any) => {
       end={{x: 0.0, y: 1.0}}
       locations={[0, 0.45]}
       colors={[greyBg, '#131111']}
-      className="flex h-full justify-center items-center">
+      className="flex flex-1 justify-center items-center">
       <NFTPage />
     </StyledBg>
   );
