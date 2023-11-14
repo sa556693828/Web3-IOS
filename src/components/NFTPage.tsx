@@ -1,13 +1,6 @@
 import React, {useState, useEffect, useCallback, useContext} from 'react';
 import {StyleSheet, Image} from 'react-native';
-import {
-  VStack,
-  Spinner,
-  Button,
-  Text,
-  Box,
-  ScrollView,
-} from '@gluestack-ui/themed';
+import {VStack, Spinner, Button, Text, Box} from '@gluestack-ui/themed';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import {ethers} from 'ethers';
@@ -20,9 +13,8 @@ import Swiper from 'react-native-swiper';
 import {MarketContext} from '../context/MarketProvider';
 import useUser from '../hooks/useUser';
 import useLoginAccount from '../hooks/useLoginAccount';
-import useImage from '../hooks/useImage';
-import {Stream} from 'stream';
-import {RefreshControl} from 'react-native';
+import useHistory from '../hooks/useHistory';
+import useUtility from '../hooks/useUtility';
 
 export interface NFTData {
   collection: any;
@@ -35,13 +27,19 @@ export interface NFTData {
   fee_recipient: string;
 }
 
+export interface historyList {
+  name: string;
+  create_time: string;
+  tokenURI?: string;
+}
+
 const NFTPage = () => {
   const {userVid} = useContext(MarketContext);
+  const {getHistory, historyList, getHistories} = useHistory();
+  const {getUtilities, data: utList} = useUtility();
   const {getAccount, accountData} = useLoginAccount();
   const {getUser, data, success} = useUser();
-  const {getImage, image} = useImage();
   const StyledBox = styled(Box);
-  const StyledScrollView = styled(ScrollView);
   const StyledButton = styled(Button);
   const StyledSwiper = styled(Swiper);
   const StyledImage = styled(Image);
@@ -55,6 +53,30 @@ const NFTPage = () => {
   const [tokenID, setTokenID] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
+  const [index, setIndex] = useState(0);
+  const [currentHistory, setCurrentHistory] = useState<historyList>({
+    name: '',
+    create_time: '',
+    tokenURI: '',
+  });
+  const [history, setHistory] = useState<historyList[]>([
+    {
+      name: '',
+      create_time: '',
+      tokenURI: '',
+    },
+  ]);
+  const getImage = async (uri: string) => {
+    setLoading(true);
+    try {
+      const res = await axios.get(uri);
+      setNFTData(res.data);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
 
   const getTokenID = useCallback(
     async (address: string) => {
@@ -80,30 +102,75 @@ const NFTPage = () => {
     try {
       const tokenID = await getTokenID(address);
       const tokenURI = await contract.tokenURI(tokenID);
-      console.log(tokenURI);
       setTokenID(tokenID);
       if (tokenURI) {
-        const res = await axios.get(tokenURI);
-        console.log('NFTData', res.data);
-        setNFTData(res.data);
-        setLoading(false);
+        await getImage(tokenURI);
       }
     } catch (error) {
       console.error(error);
       setLoading(false);
     }
   };
+  const formatDateOne = (date: string) => {
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const formattedDate = new Date(date)
+      .toLocaleDateString('ja-JP', {
+        timeZone: userTimeZone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        // hour: 'numeric',
+        // minute: 'numeric',
+      })
+      .replace(/\//g, '-');
+    return `${formattedDate}`;
+  };
+  const transformHistory = (list: any) => {
+    const transformedData = list?.map((item: any) => {
+      const utTitle = utList?.find(
+        (ut: any) => ut.view_id === item.utility_vid,
+      )?.title;
+      const time = formatDateOne(item.create_time);
+      return {
+        name: utTitle ? utTitle : 'NFT Minting',
+        create_time: time,
+        tokenURI: `https://yohaku.soooul.xyz/api/nft/metadata/founder/${item.token_uri_id}`,
+      };
+    });
+    setHistory(transformedData);
+    setCurrentHistory(transformedData[transformedData.length - 1]);
+    setIndex(transformedData.length - 1);
+  };
+  const changeHistory = (index: number) => {
+    setCurrentHistory(history[index]);
+    setIndex(index);
+    setShowModal(false);
+  };
 
   useEffect(() => {
     getUser(userVid);
     getAccount(userVid);
+    getHistory(userVid);
+    getUtilities();
   }, [userVid]);
 
+  // useEffect(() => {
+  //   if (data && success && data?.wallet_address) {
+  //     getNFTs(data.wallet_address);
+  //   }
+  // }, [data, success, data?.wallet_address, refreshing]);
+
   useEffect(() => {
-    if (data && success && data?.wallet_address) {
-      getNFTs(data.wallet_address);
+    if (historyList && utList) {
+      transformHistory(historyList);
     }
-  }, [data, success, data?.wallet_address, refreshing]);
+  }, [historyList, utList]);
+
+  useEffect(() => {
+    if (currentHistory && currentHistory.tokenURI) {
+      getImage(currentHistory.tokenURI);
+    }
+  }, [currentHistory]);
 
   const NFTSection = () => {
     return (
@@ -157,28 +224,51 @@ const NFTPage = () => {
           alignItems: 'flex-start',
         }}
         nextButton={
-          <StyledText className="text-white text-5xl font-thin -mr-3">
-            ›
-          </StyledText>
+          <StyledButton
+            className={`p-0 pr-4 bg-transparent w-14 flex justify-end ${
+              index === history.length - 1 ? 'opacity-30' : ''
+            }`}
+            disabled={index === history.length - 1}
+            onPress={
+              index === history.length - 1
+                ? () => {}
+                : () => changeHistory(index + 1)
+            }>
+            <StyledText className="text-white text-5xl font-thin -ml-3">
+              ›
+            </StyledText>
+          </StyledButton>
         }
         prevButton={
-          <StyledText className="text-white text-5xl font-thin -ml-3">
-            ‹
-          </StyledText>
+          <StyledButton
+            className={`p-0 pl-4 bg-transparent w-14 flex justify-start  ${
+              index === 0 ? 'opacity-30' : ''
+            }`}
+            disabled={index === 0}
+            onPress={index === 0 ? () => {} : () => changeHistory(index - 1)}>
+            <StyledText className="text-white text-5xl font-thin -ml-3">
+              ‹
+            </StyledText>
+          </StyledButton>
         }>
         <StyledButton
           className="justify-center items-center flex flex-col bg-transparent"
           onPress={() => setShowModal(true)}>
           <StyledText className="text-white uppercase tracking-[1.28px]">
-            Work shop
+            {currentHistory?.name}
           </StyledText>
           <StyledText className="text-white pt-2 uppercase text-white/40">
-            2023-11-10
+            {currentHistory?.create_time}
           </StyledText>
         </StyledButton>
       </StyledSwiper>
 
-      <HistoryModal showModal={showModal} setShowModal={setShowModal} />
+      <HistoryModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        data={history}
+        changeData={changeHistory}
+      />
     </StyledBox>
   );
 };

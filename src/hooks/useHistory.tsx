@@ -7,14 +7,14 @@ export default function useHistory() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const basicURL = '/api/v1/admin/utility_dynamic_history';
+  const basicURL =
+    'https://yohaku.soooul.xyz/api/v1/admin/utility_dynamic_history';
 
   const getHistories = useCallback(async () => {
     setLoading(true);
     try {
       const res = await axios.get(basicURL);
       setHistoryList(res.data.data.data);
-      console.log('getHistory', res.data.data.data);
       setSuccess(true);
     } catch (error: any) {
       console.log(error);
@@ -29,7 +29,6 @@ export default function useHistory() {
     try {
       const res = await axios.get(`${basicURL}/${uvid}`);
       setHistoryList(res.data.data.data);
-      console.log('getHistory', res.data.data.data);
       setSuccess(true);
     } catch (error: any) {
       console.log(error);

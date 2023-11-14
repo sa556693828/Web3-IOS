@@ -1,58 +1,48 @@
 import React from 'react';
-import {Text, Box, HStack} from '@gluestack-ui/themed';
+import {Text, Box, HStack, Button} from '@gluestack-ui/themed';
 import {styled} from 'nativewind';
 import LinearGradient from 'react-native-linear-gradient';
 import {FlatList, Modal} from 'react-native';
+import {historyList} from './NFTPage';
 
 interface HistoryModalProps {
   showModal: boolean;
   setShowModal: (showModal: boolean) => void;
+  data: historyList[];
+  changeData: (index: number) => void;
 }
 
-const HistoryModal = (props: HistoryModalProps) => {
-  const {showModal, setShowModal} = props;
-  const history = [
-    {
-      name: 'Workshop',
-      date: '2021-10-10',
-    },
-    {
-      name: 'adornment',
-      date: '2021-10-10',
-    },
-    {
-      name: 'gallery',
-      date: '2021-10-10',
-    },
-    {
-      name: 'flagship store',
-      date: '2021-10-10',
-    },
-    {
-      name: 'YOHAKU Minting',
-      date: '2021-10-10',
-    },
-  ];
+const HistoryModal = ({
+  showModal,
+  setShowModal,
+  data,
+  changeData,
+}: HistoryModalProps) => {
   const StyledBox = styled(Box);
   const StyledBg = styled(LinearGradient);
   const StyledModal = styled(Modal);
   const StyledText = styled(Text);
   const StyledHStack = styled(HStack);
+  const StyledButton = styled(Button);
 
-  const Item = ({title, date}: any) => {
+  const Item = ({name, date, index}: any) => {
     return (
-      <StyledHStack className="py-8 justify-between border-t border-white/20 ">
-        <StyledText className="text-white font-normal text-sm leading-[120%] tracking-[1.12px]">
-          {title}
-        </StyledText>
-        <StyledText className="text-white font-normal text-sm leading-[120%] tracking-[1.12px]">
-          {date}
-        </StyledText>
+      <StyledHStack className="py-4 justify-between border-t border-white/20">
+        <StyledButton
+          className="flex justify-between p-0 w-full bg-transparent"
+          onPress={() => changeData(index)}>
+          <StyledText className="text-white font-normal text-sm leading-[120%] tracking-[1.12px]">
+            {name}
+          </StyledText>
+          <StyledText className="text-white font-normal text-sm leading-[120%] tracking-[1.12px]">
+            {date}
+          </StyledText>
+        </StyledButton>
       </StyledHStack>
     );
   };
-  const renderItem = ({item}: any) => (
-    <Item title={item.name} date={item.date} />
+  const renderItem = ({item, index}: any) => (
+    <Item name={item.name} date={item.create_time} index={index} />
   );
   return (
     <StyledModal
@@ -80,7 +70,7 @@ const HistoryModal = (props: HistoryModalProps) => {
             <StyledText className="uppercase font-normal">date</StyledText>
           </StyledHStack>
           <FlatList
-            data={history}
+            data={data}
             renderItem={renderItem}
             keyExtractor={item => item.name}
           />
