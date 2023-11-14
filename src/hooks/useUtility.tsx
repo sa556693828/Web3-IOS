@@ -8,6 +8,7 @@ export default function useUtility() {
   const [success, setSuccess] = useState(false);
 
   const URL = 'https://yohaku.soooul.xyz/api/v1/utilities';
+  const adminURL = 'https://yohaku.soooul.xyz/api/v1/admin/utilities';
 
   const getUtilities = useCallback(async () => {
     setLoading(true);

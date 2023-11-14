@@ -76,6 +76,9 @@ PODS:
     - hermes-engine/Pre-built (= 0.72.6)
   - hermes-engine/Pre-built (0.72.6)
   - libevent (2.1.12)
+  - MMKV (1.2.13):
+    - MMKVCore (~> 1.2.13)
+  - MMKVCore (1.2.16)
   - OpenSSL-Universal (1.1.1100)
   - RCT-Folly (2021.07.22.00):
     - boost
@@ -381,6 +384,9 @@ PODS:
     - React-Core
   - react-native-get-random-values (1.9.0):
     - React-Core
+  - react-native-mmkv-storage (0.9.1):
+    - MMKV (= 1.2.13)
+    - React-Core
   - react-native-pager-view (6.2.2):
     - React-Core
   - react-native-randombytes (3.6.1):
@@ -559,6 +565,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
+  - react-native-mmkv-storage (from `../node_modules/react-native-mmkv-storage`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-randombytes (from `../node_modules/react-native-randombytes`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -597,6 +604,8 @@ SPEC REPOS:
     - FlipperKit
     - fmt
     - libevent
+    - MMKV
+    - MMKVCore
     - OpenSSL-Universal
     - SocketRocket
     - YogaKit
@@ -651,6 +660,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-background-timer"
   react-native-get-random-values:
     :path: "../node_modules/react-native-get-random-values"
+  react-native-mmkv-storage:
+    :path: "../node_modules/react-native-mmkv-storage"
   react-native-pager-view:
     :path: "../node_modules/react-native-pager-view"
   react-native-randombytes:
@@ -719,6 +730,8 @@ SPEC CHECKSUMS:
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   hermes-engine: 8057e75cfc1437b178ac86c8654b24e7fead7f60
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
+  MMKV: aac95d817a100479445633f2b3ed8961b4ac5043
+  MMKVCore: 9cfef4c48c6c46f66226fc2e4634d78490206a48
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: 28469809442eb4eb5528462705f7d852948c8a74
@@ -737,6 +750,7 @@ SPEC CHECKSUMS:
   React-logger: cebf22b6cf43434e471dc561e5911b40ac01d289
   react-native-background-timer: 17ea5e06803401a379ebf1f20505b793ac44d0fe
   react-native-get-random-values: dee677497c6a740b71e5612e8dbd83e7539ed5bb
+  react-native-mmkv-storage: cfb6854594cfdc5f7383a9e464bb025417d1721c
   react-native-pager-view: 02a5c4962530f7efc10dd51ee9cdabeff5e6c631
   react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
   react-native-safe-area-context: 2cd91d532de12acdb0a9cbc8d43ac72a8e4c897c

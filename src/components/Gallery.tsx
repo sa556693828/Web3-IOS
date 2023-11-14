@@ -52,9 +52,11 @@ const Gallery = () => {
     try {
       const tokenID = await getTokenID(address);
       const tokenURI = await contract.tokenURI(tokenID);
+      console.log(tokenURI);
       setTokenID(tokenID);
       if (tokenURI) {
         const res = await axios.get(tokenURI);
+        console.log('NFTData', res.data);
         setNFTData(res.data);
         setLoading(false);
       }
