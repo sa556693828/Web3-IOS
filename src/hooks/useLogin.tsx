@@ -1,6 +1,7 @@
 import {useCallback, useContext, useState} from 'react';
 import axios from 'axios';
 import {MarketContext} from '../context/MarketProvider';
+import {useStorage} from './useStorge';
 
 export default function useLogin() {
   // const {logIn} = useContext(MarketContext);
@@ -9,7 +10,10 @@ export default function useLogin() {
   const [loading, setLoading] = useState(false);
   const loginCodeURL = 'https://yohaku.soooul.xyz/api/v1/login/access_code';
   const loginAccountURL = 'https://yohaku.soooul.xyz/api/v1/login/account';
-
+  const userVID = useStorage('userVid');
+  const [userVid, setUserVid] = userVID;
+  const UserTOKEN = useStorage('userToken');
+  const [userToken, setUserToken] = UserTOKEN;
   const loginCode = useCallback(async (code: string) => {
     setLoading(true);
     try {
