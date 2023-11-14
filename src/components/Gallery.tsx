@@ -11,9 +11,10 @@ import useUser from '../hooks/useUser';
 import basic from '../abi/basic.json';
 import axios from 'axios';
 import {NFTData} from './NFTPage';
+import {useStorage} from '../hooks/useStorge';
 
 const Gallery = () => {
-  const {userVid} = useContext(MarketContext);
+  const {userVid, firstTrigger} = useContext(MarketContext);
   const {getAccount, accountData} = useLoginAccount();
   const {getUser, data, success} = useUser();
   const StyledBox = styled(Box);
@@ -68,7 +69,7 @@ const Gallery = () => {
   useEffect(() => {
     getUser(userVid);
     getAccount(userVid);
-  }, [userVid]);
+  }, [userVid, firstTrigger]);
 
   useEffect(() => {
     if (data && success && data?.wallet_address) {

@@ -3,8 +3,13 @@ import React from 'react';
 import Profile from '../components/Profile';
 import {Box, Button, Text} from '@gluestack-ui/themed';
 import LinearGradient from 'react-native-linear-gradient';
+import {useStorage} from '../hooks/useStorge';
 
 const ProfileScreen = ({navigation}: any) => {
+  const loginStatus = useStorage('isLogin');
+  const userData = useStorage('userVid');
+  const [isLogin, setIsLogin] = loginStatus;
+  const [userVid, setUserVid] = userData;
   const StyledBg = styled(LinearGradient);
   const StyledBox = styled(Box);
   const StyledText = styled(Text);
@@ -25,7 +30,11 @@ const ProfileScreen = ({navigation}: any) => {
         <Profile />
         <StyledButton
           className="w-full h-[61px] bg-white"
-          onPress={() => navigation.navigate('Login')}>
+          onPress={() => {
+            setIsLogin('false');
+            setUserVid('');
+            navigation.navigate('Login');
+          }}>
           <StyledText className="text-black">Logout</StyledText>
         </StyledButton>
       </StyledBox>

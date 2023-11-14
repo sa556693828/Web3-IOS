@@ -15,6 +15,7 @@ import useUser from '../hooks/useUser';
 import useLoginAccount from '../hooks/useLoginAccount';
 import useHistory from '../hooks/useHistory';
 import useUtility from '../hooks/useUtility';
+import {useStorage} from '../hooks/useStorge';
 
 export interface NFTData {
   collection: any;
@@ -34,7 +35,7 @@ export interface historyList {
 }
 
 const NFTPage = () => {
-  const {userVid} = useContext(MarketContext);
+  const {userVid, firstTrigger} = useContext(MarketContext);
   const {getHistory, historyList, getHistories} = useHistory();
   const {getUtilities, data: utList} = useUtility();
   const {getAccount, accountData} = useLoginAccount();
@@ -152,7 +153,7 @@ const NFTPage = () => {
     getAccount(userVid);
     getHistory(userVid);
     getUtilities();
-  }, [userVid]);
+  }, [userVid, firstTrigger]);
 
   // useEffect(() => {
   //   if (data && success && data?.wallet_address) {

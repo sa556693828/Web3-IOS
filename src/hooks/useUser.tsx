@@ -9,6 +9,7 @@ export default function useUser() {
   const URL = 'https://yohaku.soooul.xyz/api/v1/users';
 
   const getUser = useCallback(async (uid: string) => {
+    console.log('uid,uid', uid);
     setLoading(true);
     try {
       const res = await axios.get(`${URL}/${uid}`);

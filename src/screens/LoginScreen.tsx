@@ -4,10 +4,14 @@ import {styled} from 'nativewind';
 import {EyeIcon, EyeOffIcon} from 'lucide-react-native';
 import {TextInput} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
-import axios from 'axios';
 import useLogin from '../hooks/useLogin';
+import {useStorage} from '../hooks/useStorge';
 
 const LoginScreen = ({navigation}: any) => {
+  const data = useStorage('isLogin', 'false');
+  const userVID = useStorage('userVid');
+  const [isLogin, setIsLogin] = data;
+  const [userVid, setUserVid] = userVID;
   const StyledText = styled(Text);
   const StyledBox = styled(Box);
   const StyledButton = styled(Button);
@@ -44,7 +48,8 @@ const LoginScreen = ({navigation}: any) => {
         const res = await loginAccount(data.username, data.password);
         if (res.code === 200) {
           navigation.navigate('home');
-          // storeData(res.data)
+          setIsLogin('true');
+          setUserVid(res.data.data[0].view_id);
           setLoading(false);
           return;
         } else if (res.code === 405) {

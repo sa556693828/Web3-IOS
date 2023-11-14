@@ -3,7 +3,7 @@ import axios from 'axios';
 import {MarketContext} from '../context/MarketProvider';
 
 export default function useLogin() {
-  const {logIn} = useContext(MarketContext);
+  // const {logIn} = useContext(MarketContext);
   const [loginStatus, setLoginStatus] = useState<any>();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,7 @@ export default function useLogin() {
           password: password,
         });
         setLoginStatus(res.data);
-        logIn(res.data.data.data[0].view_id);
+        // logIn(res.data.data.data[0].view_id);
         return res.data;
       } catch (error: any) {
         console.log(error);

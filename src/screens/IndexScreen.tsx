@@ -1,15 +1,33 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Box, Text} from '@gluestack-ui/themed';
 import {styled} from 'nativewind';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {useStorage} from '../hooks/useStorge';
+import {MarketContext} from '../context/MarketProvider';
 
 const IndexScreen = ({navigation}: any) => {
+  const {logIn, trigger} = useContext(MarketContext);
+  const data = useStorage('isLogin');
+  const [isLogin, setIsLogin] = data;
+  const contextData = useStorage('userVid');
+  const [userVid] = contextData;
   const StyledText = styled(Text);
   const StyledBox = styled(Box);
+  const nav = async () => {
+    if (isLogin === 'true') {
+      await logIn(userVid);
+      await trigger();
+      setTimeout(() => {
+        navigation.navigate('home');
+      }, 2000);
+    } else if (isLogin === 'false') {
+      setTimeout(() => {
+        navigation.navigate('Login');
+      }, 2000);
+    }
+  };
   useEffect(() => {
-    setTimeout(() => {
-      navigation.navigate('Login');
-    }, 2000);
+    nav();
   }, []);
   return (
     <TouchableWithoutFeedback onPress={() => navigation.navigate('Login')}>
