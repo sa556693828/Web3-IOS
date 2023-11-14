@@ -10,8 +10,11 @@ import {useStorage} from '../hooks/useStorge';
 const LoginScreen = ({navigation}: any) => {
   const data = useStorage('isLogin', 'false');
   const userVID = useStorage('userVid');
+  const UserTOKEN = useStorage('userToken');
   const [isLogin, setIsLogin] = data;
   const [userVid, setUserVid] = userVID;
+  const [userToken, setUserToken] = UserTOKEN;
+
   const StyledText = styled(Text);
   const StyledBox = styled(Box);
   const StyledButton = styled(Button);
@@ -50,6 +53,7 @@ const LoginScreen = ({navigation}: any) => {
           navigation.navigate('home');
           setIsLogin('true');
           setUserVid(res.data.data[0].view_id);
+          setUserToken(res.data.data[0].token);
           setLoading(false);
           return;
         } else if (res.code === 405) {

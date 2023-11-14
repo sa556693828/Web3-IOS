@@ -7,24 +7,6 @@ import axios from 'axios';
 const NFTScreen = ({navigation}: any) => {
   const StyledBg = styled(LinearGradient);
   const greyBg = '#6A7460';
-  const yellowBg = '#B89950';
-  const [info, setInfo] = React.useState();
-  const getUserInfo = async () => {
-    try {
-      const response = await axios.get(
-        'https://api-dev.yohaku.art/api/v1/users/me',
-        {
-          // headers: {
-          //   Authorization: `Bearer ${global.accessToken}`,
-          // },
-        },
-      );
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  // getUserInfo();
 
   return (
     <StyledBg

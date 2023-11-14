@@ -14,7 +14,10 @@ import {NFTData} from './NFTPage';
 import {useStorage} from '../hooks/useStorge';
 
 const Gallery = () => {
-  const {userVid, firstTrigger} = useContext(MarketContext);
+  const userVID = useStorage('userVid');
+  const [userVid, setUserVid] = userVID;
+  const UserTOKEN = useStorage('userToken');
+  const [userToken, setUserToken] = UserTOKEN;
   const {getAccount, accountData} = useLoginAccount();
   const {getUser, data, success} = useUser();
   const StyledBox = styled(Box);
@@ -53,11 +56,14 @@ const Gallery = () => {
     try {
       const tokenID = await getTokenID(address);
       const tokenURI = await contract.tokenURI(tokenID);
-      console.log(tokenURI);
       setTokenID(tokenID);
       if (tokenURI) {
-        const res = await axios.get(tokenURI);
-        console.log('NFTData', res.data);
+        const res = await axios.get(tokenURI, {
+          withCredentials: true,
+          headers: {
+            Cookie: `uvid=${userVid}; token=${userToken}`,
+          },
+        });
         setNFTData(res.data);
         setLoading(false);
       }
@@ -69,7 +75,7 @@ const Gallery = () => {
   useEffect(() => {
     getUser(userVid);
     getAccount(userVid);
-  }, [userVid, firstTrigger]);
+  }, [userVid]);
 
   useEffect(() => {
     if (data && success && data?.wallet_address) {

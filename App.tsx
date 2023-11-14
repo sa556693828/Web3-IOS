@@ -12,6 +12,9 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import {UserSquare, GalleryHorizontalEnd, Grid2x2} from 'lucide-react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {MarketProvider} from './src/context/MarketProvider';
+import axios from 'axios';
+
+axios.defaults.withCredentials = true;
 
 const Stack = createStackNavigator();
 

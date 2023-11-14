@@ -1,11 +1,16 @@
 import {useCallback, useState} from 'react';
 import axios from 'axios';
+import {useStorage} from './useStorge';
 
 export default function useHistory() {
   const [historyList, setHistoryList] = useState<Array<any>>();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const userVID = useStorage('userVid');
+  const [userVid, setUserVid] = userVID;
+  const UserTOKEN = useStorage('userToken');
+  const [userToken, setUserToken] = UserTOKEN;
 
   const basicURL =
     'https://yohaku.soooul.xyz/api/v1/admin/utility_dynamic_history';
@@ -13,7 +18,12 @@ export default function useHistory() {
   const getHistories = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await axios.get(basicURL);
+      const res = await axios.get(basicURL, {
+        withCredentials: true,
+        headers: {
+          Cookie: `uvid=${userVid}; token=${userToken}`,
+        },
+      });
       setHistoryList(res.data.data.data);
       setSuccess(true);
     } catch (error: any) {
@@ -27,7 +37,12 @@ export default function useHistory() {
   const getHistory = useCallback(async (uvid: string) => {
     setLoading(true);
     try {
-      const res = await axios.get(`${basicURL}/${uvid}`);
+      const res = await axios.get(`${basicURL}/${uvid}`, {
+        withCredentials: true,
+        headers: {
+          Cookie: `uvid=${userVid}; token=${userToken}`,
+        },
+      });
       setHistoryList(res.data.data.data);
       setSuccess(true);
     } catch (error: any) {

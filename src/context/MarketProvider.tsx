@@ -41,7 +41,6 @@ export const MarketProvider = ({children}: {children: any}) => {
 
   function logIn(user_vid: string) {
     setUserVid(user_vid);
-    console.log('user_vid', user_vid);
   }
   function logOut() {
     setUserVid('');

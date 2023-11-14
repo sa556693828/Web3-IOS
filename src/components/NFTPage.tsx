@@ -35,7 +35,11 @@ export interface historyList {
 }
 
 const NFTPage = () => {
-  const {userVid, firstTrigger} = useContext(MarketContext);
+  const userVID = useStorage('userVid');
+  const [userVid, setUserVid] = userVID;
+  const UserTOKEN = useStorage('userToken');
+  const [userToken, setUserToken] = UserTOKEN;
+  const [trigger, setTrigger] = useState(false);
   const {getHistory, historyList, getHistories} = useHistory();
   const {getUtilities, data: utList} = useUtility();
   const {getAccount, accountData} = useLoginAccount();
@@ -48,6 +52,7 @@ const NFTPage = () => {
   const provider = new ethers.providers.JsonRpcProvider(
     'https://eth-goerli.g.alchemy.com/v2/rF-18JXiZ8TUtMsk0VUI1ppUq6gDzt9m',
   );
+
   const contract = new ethers.Contract(basic.address, basic.abi, provider);
   const [loading, setLoading] = useState(false);
   const [NFTData, setNFTData] = useState<NFTData>({} as unknown as NFTData);
@@ -70,7 +75,12 @@ const NFTPage = () => {
   const getImage = async (uri: string) => {
     setLoading(true);
     try {
-      const res = await axios.get(uri);
+      const res = await axios.get(uri, {
+        withCredentials: true,
+        headers: {
+          Cookie: `uvid=${userVid}; token=${userToken}`,
+        },
+      });
       setNFTData(res.data);
       setLoading(false);
     } catch (error) {
@@ -129,7 +139,7 @@ const NFTPage = () => {
   const transformHistory = (list: any) => {
     const transformedData = list?.map((item: any) => {
       const utTitle = utList?.find(
-        (ut: any) => ut.view_id === item.utility_vid,
+        (ut: any) => ut?.view_id === item?.utility_vid,
       )?.title;
       const time = formatDateOne(item.create_time);
       return {
@@ -153,7 +163,7 @@ const NFTPage = () => {
     getAccount(userVid);
     getHistory(userVid);
     getUtilities();
-  }, [userVid, firstTrigger]);
+  }, [userVid]);
 
   // useEffect(() => {
   //   if (data && success && data?.wallet_address) {
@@ -162,7 +172,7 @@ const NFTPage = () => {
   // }, [data, success, data?.wallet_address, refreshing]);
 
   useEffect(() => {
-    if (historyList && utList) {
+    if (historyList && utList && historyList.length > 0) {
       transformHistory(historyList);
     }
   }, [historyList, utList]);
