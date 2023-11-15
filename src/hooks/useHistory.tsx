@@ -43,7 +43,6 @@ export default function useHistory() {
           Cookie: `uvid=${userVid}; token=${userToken}`,
         },
       });
-      console.log(res.data);
       setHistoryList(res.data.data.data);
       setSuccess(true);
     } catch (error: any) {
