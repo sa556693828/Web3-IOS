@@ -26,7 +26,7 @@ export default function useUser() {
       setData(res.data.data.data);
       setSuccess(true);
     } catch (error: any) {
-      console.log(error);
+      console.log('getUser', error);
     }
     setLoading(false);
   }, []);

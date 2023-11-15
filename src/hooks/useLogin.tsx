@@ -8,22 +8,7 @@ export default function useLogin() {
   const [loginStatus, setLoginStatus] = useState<any>();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const loginCodeURL = 'https://yohaku.soooul.xyz/api/v1/login/access_code';
-  const loginAccountURL = 'https://yohaku.soooul.xyz/api/v1/login/account';
-  const userVID = useStorage('userVid');
-  const [userVid, setUserVid] = userVID;
-  const UserTOKEN = useStorage('userToken');
-  const [userToken, setUserToken] = UserTOKEN;
-  const loginCode = useCallback(async (code: string) => {
-    setLoading(true);
-    try {
-      const res = await axios.post(loginCodeURL, {access_code: code});
-      setLoginStatus(res.data);
-    } catch (error: any) {
-      console.log(error);
-    }
-    setLoading(false);
-  }, []);
+  const loginAccountURL = 'https://yohaku.soooul.xyz/api/v1/login/account_ios';
 
   const loginAccount = useCallback(
     async (account: string, password: string) => {
@@ -34,7 +19,6 @@ export default function useLogin() {
           password: password,
         });
         setLoginStatus(res.data);
-        // logIn(res.data.data.data[0].view_id);
         return res.data;
       } catch (error: any) {
         console.log(error);
@@ -44,5 +28,5 @@ export default function useLogin() {
     [],
   );
 
-  return {loginStatus, error, loading, loginCode, loginAccount};
+  return {loginStatus, error, loading, loginAccount};
 }

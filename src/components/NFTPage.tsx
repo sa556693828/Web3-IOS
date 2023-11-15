@@ -40,7 +40,7 @@ const NFTPage = () => {
   const UserTOKEN = useStorage('userToken');
   const [userToken, setUserToken] = UserTOKEN;
   const [trigger, setTrigger] = useState(false);
-  const {getHistory, historyList, getHistories} = useHistory();
+  const {getHistory, historyList} = useHistory();
   const {getUtilities, data: utList} = useUtility();
   const {getAccount, accountData} = useLoginAccount();
   const {getUser, data, success} = useUser();
@@ -60,6 +60,7 @@ const NFTPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
   const [index, setIndex] = useState(0);
+  const [historyLoading, setHistoryLoading] = useState(false);
   const [currentHistory, setCurrentHistory] = useState<historyList>({
     name: '',
     create_time: '',
@@ -88,7 +89,6 @@ const NFTPage = () => {
       setLoading(false);
     }
   };
-
   const getTokenID = useCallback(
     async (address: string) => {
       try {
@@ -114,9 +114,9 @@ const NFTPage = () => {
       const tokenID = await getTokenID(address);
       const tokenURI = await contract.tokenURI(tokenID);
       setTokenID(tokenID);
-      if (tokenURI) {
-        await getImage(tokenURI);
-      }
+      // if (tokenURI) {
+      //   await getImage(tokenURI);
+      // }
     } catch (error) {
       console.error(error);
       setLoading(false);
@@ -136,21 +136,27 @@ const NFTPage = () => {
       .replace(/\//g, '-');
     return `${formattedDate}`;
   };
-  const transformHistory = (list: any) => {
-    const transformedData = list?.map((item: any) => {
-      const utTitle = utList?.find(
-        (ut: any) => ut?.view_id === item?.utility_vid,
-      )?.title;
-      const time = formatDateOne(item.create_time);
-      return {
-        name: utTitle ? utTitle : 'NFT Minting',
-        create_time: time,
-        tokenURI: `https://yohaku.soooul.xyz/api/nft/metadata/founder/${item.token_uri_id}`,
-      };
-    });
-    setHistory(transformedData);
-    setCurrentHistory(transformedData[transformedData.length - 1]);
-    setIndex(transformedData.length - 1);
+  const transformHistory = async (list: any) => {
+    setHistoryLoading(true);
+    try {
+      const transformedData = await list?.map((item: any) => {
+        const utTitle = utList?.find(
+          (ut: any) => ut?.view_id === item?.utility_vid,
+        )?.title;
+        const time = formatDateOne(item.create_time);
+        return {
+          name: utTitle ? utTitle : 'NFT Minting',
+          create_time: time,
+          tokenURI: `https://yohaku.soooul.xyz/api/nft/metadata/founder/${item.token_uri_id}`,
+        };
+      });
+      setHistory(transformedData);
+      setCurrentHistory(transformedData[transformedData.length - 1]);
+      setIndex(transformedData.length - 1);
+    } catch (error) {
+      console.error(error);
+    }
+    setHistoryLoading(false);
   };
   const changeHistory = (index: number) => {
     setCurrentHistory(history[index]);
@@ -165,23 +171,23 @@ const NFTPage = () => {
     getUtilities();
   }, [userVid]);
 
-  // useEffect(() => {
-  //   if (data && success && data?.wallet_address) {
-  //     getNFTs(data.wallet_address);
-  //   }
-  // }, [data, success, data?.wallet_address, refreshing]);
+  useEffect(() => {
+    if (data && success && data?.wallet_address) {
+      getNFTs(data.wallet_address);
+    }
+  }, [data, success, data?.wallet_address, refreshing]);
 
   useEffect(() => {
     if (historyList && utList && historyList.length > 0) {
       transformHistory(historyList);
     }
-  }, [historyList, utList]);
+  }, [historyList, utList, refreshing]);
 
   useEffect(() => {
     if (currentHistory && currentHistory.tokenURI) {
       getImage(currentHistory.tokenURI);
     }
-  }, [currentHistory]);
+  }, [currentHistory, refreshing]);
 
   const NFTSection = () => {
     return (
@@ -265,12 +271,18 @@ const NFTPage = () => {
         <StyledButton
           className="justify-center items-center flex flex-col bg-transparent"
           onPress={() => setShowModal(true)}>
-          <StyledText className="text-white uppercase tracking-[1.28px]">
-            {currentHistory?.name}
-          </StyledText>
-          <StyledText className="text-white pt-2 uppercase text-white/40">
-            {currentHistory?.create_time}
-          </StyledText>
+          {historyLoading ? (
+            <Spinner color="$white" />
+          ) : (
+            <>
+              <StyledText className="text-white uppercase tracking-[1.28px]">
+                {currentHistory?.name}
+              </StyledText>
+              <StyledText className="text-white pt-2 uppercase text-white/40">
+                {currentHistory?.create_time}
+              </StyledText>
+            </>
+          )}
         </StyledButton>
       </StyledSwiper>
 

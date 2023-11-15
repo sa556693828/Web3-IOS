@@ -17,8 +17,8 @@ const GalleryScreen = ({navigation}: any) => {
       end={{x: 0.0, y: 1.0}}
       locations={[0, 0.45]}
       colors={[greyBg, '#131111']}
-      className="flex h-full justify-center items-center">
-      <StyledBox className="flex h-full justify-start items-center text-left pt-[120px] px-4 w-full">
+      className="flex flex-1 justify-center items-center">
+      <StyledBox className="flex h-full justify-start items-center text-left pt-[120px] pb-[130px] px-4 w-full">
         <StyledText className="text-white text-5xl font-semibold pb-20 w-full">
           artisaNFTs
         </StyledText>

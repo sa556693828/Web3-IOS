@@ -8,8 +8,10 @@ import {useStorage} from '../hooks/useStorge';
 const ProfileScreen = ({navigation}: any) => {
   const loginStatus = useStorage('isLogin');
   const userData = useStorage('userVid');
+  const UserTOKEN = useStorage('userToken');
   const [isLogin, setIsLogin] = loginStatus;
   const [userVid, setUserVid] = userData;
+  const [userToken, setUserToken] = UserTOKEN;
   const StyledBg = styled(LinearGradient);
   const StyledBox = styled(Box);
   const StyledText = styled(Text);
@@ -33,6 +35,7 @@ const ProfileScreen = ({navigation}: any) => {
           onPress={() => {
             setIsLogin('false');
             setUserVid('');
+            setUserToken('');
             navigation.navigate('Login');
           }}>
           <StyledText className="text-black">Logout</StyledText>
