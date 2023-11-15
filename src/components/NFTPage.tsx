@@ -16,6 +16,7 @@ import useLoginAccount from '../hooks/useLoginAccount';
 import useHistory from '../hooks/useHistory';
 import useUtility from '../hooks/useUtility';
 import {useStorage} from '../hooks/useStorge';
+import useOrder from '../hooks/useOrder';
 
 export interface NFTData {
   collection: any;
@@ -43,6 +44,7 @@ const NFTPage = () => {
   const {getHistory, historyList} = useHistory();
   const {getUtilities, data: utList} = useUtility();
   const {getAccount, accountData} = useLoginAccount();
+  const {data: orderList, getUserOrders} = useOrder();
   const {getUser, data, success} = useUser();
   const StyledBox = styled(Box);
   const StyledButton = styled(Button);
@@ -52,7 +54,6 @@ const NFTPage = () => {
   const provider = new ethers.providers.JsonRpcProvider(
     'https://eth-goerli.g.alchemy.com/v2/rF-18JXiZ8TUtMsk0VUI1ppUq6gDzt9m',
   );
-
   const contract = new ethers.Contract(basic.address, basic.abi, provider);
   const [loading, setLoading] = useState(false);
   const [NFTData, setNFTData] = useState<NFTData>({} as unknown as NFTData);
@@ -61,6 +62,7 @@ const NFTPage = () => {
   const [refreshing, setRefreshing] = React.useState(false);
   const [index, setIndex] = useState(0);
   const [historyLoading, setHistoryLoading] = useState(false);
+  const [waiting, setWaiting] = useState(false);
   const [currentHistory, setCurrentHistory] = useState<historyList>({
     name: '',
     create_time: '',
@@ -169,6 +171,7 @@ const NFTPage = () => {
     getAccount(userVid);
     getHistory(userVid);
     getUtilities();
+    getUserOrders('utility');
   }, [userVid]);
 
   useEffect(() => {
@@ -176,6 +179,14 @@ const NFTPage = () => {
       getNFTs(data.wallet_address);
     }
   }, [data, success, data?.wallet_address, refreshing]);
+  useEffect(() => {
+    if (orderList && orderList.length > 0) {
+      const order = orderList.find((order: any) => order?.status === 10);
+      setWaiting(true);
+    } else {
+      setWaiting(false);
+    }
+  }, [orderList]);
 
   useEffect(() => {
     if (historyList && utList && historyList.length > 0) {
@@ -197,7 +208,9 @@ const NFTPage = () => {
         ) : (
           NFTData.image && (
             <StyledImage
-              className="rounded-lg w-full h-full"
+              className={`${
+                waiting ? 'opacity-40' : ''
+              } rounded-lg w-full h-full`}
               source={{
                 uri: `${NFTData.image}`,
               }}

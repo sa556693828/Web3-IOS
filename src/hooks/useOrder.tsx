@@ -35,7 +35,6 @@ export default function useOrder() {
             },
             params: {type: 2, status: defaultStatus},
           });
-          console.log('getUserOrders', res.data);
           setData(res.data.data.data);
         }
         if (defaultType === 'NFT') {
