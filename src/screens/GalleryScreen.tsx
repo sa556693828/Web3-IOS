@@ -20,7 +20,7 @@ const GalleryScreen = ({navigation}: any) => {
       className="flex flex-1 justify-center items-center">
       <StyledBox className="flex h-full justify-start items-center text-left pt-[120px] pb-[130px] px-4 w-full">
         <StyledText className="text-white text-5xl font-semibold pb-20 w-full">
-          artisaNFTs
+          artisaNFT
         </StyledText>
         <Gallery />
       </StyledBox>

@@ -123,7 +123,7 @@ const Gallery = () => {
   );
   if (orderMode) {
     return (
-      <StyledBox className="">
+      <StyledBox className="flex items-start w-full">
         <StyledButton
           className={`w-full flex items-start justify-start text-start bg-transparent p-0`}
           onPress={() => setOrderMode(false)}>

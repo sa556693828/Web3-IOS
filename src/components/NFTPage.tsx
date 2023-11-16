@@ -40,7 +40,6 @@ const NFTPage = () => {
   const [userVid, setUserVid] = userVID;
   const UserTOKEN = useStorage('userToken');
   const [userToken, setUserToken] = UserTOKEN;
-  const [trigger, setTrigger] = useState(false);
   const {getHistory, historyList} = useHistory();
   const {getUtilities, data: utList} = useUtility();
   const {getAccount, accountData} = useLoginAccount();
@@ -181,8 +180,14 @@ const NFTPage = () => {
   }, [data, success, data?.wallet_address, refreshing]);
   useEffect(() => {
     if (orderList && orderList.length > 0) {
-      const order = orderList.find((order: any) => order?.status === 10);
-      setWaiting(true);
+      const order = orderList?.find((order: any) => {
+        if (order?.status === 10) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      setWaiting(order);
     } else {
       setWaiting(false);
     }

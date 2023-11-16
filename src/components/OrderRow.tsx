@@ -82,7 +82,14 @@ const OrderRow = ({rowData, index}: Props) => {
                 setOpen(!open);
               }}>
               <QRCode
-                value={rowData?.view_id}
+                value={
+                  rowData?.status === 20
+                    ? JSON.stringify({
+                        vid: rowData?.view_id,
+                        method: 'checkOut',
+                      })
+                    : JSON.stringify({vid: rowData?.view_id, method: 'checkIn'})
+                }
                 size={300}
                 color="#000"
                 backgroundColor="#fff"
