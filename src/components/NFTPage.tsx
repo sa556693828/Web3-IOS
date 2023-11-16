@@ -171,7 +171,7 @@ const NFTPage = () => {
     getHistory(userVid);
     getUtilities();
     getUserOrders('utility');
-  }, [userVid]);
+  }, [userVid, refreshing]);
 
   useEffect(() => {
     if (data && success && data?.wallet_address) {

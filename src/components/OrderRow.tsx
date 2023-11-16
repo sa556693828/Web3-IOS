@@ -38,12 +38,15 @@ const OrderRow = ({rowData, index}: Props) => {
       className={`flex flex-row items-center justify-between py-8 space-x-4`}
       key={index}>
       <StyledBox className="w-2/3 h-32">
-        <StyledImage
-          className="rounded-lg w-full h-full"
-          source={{
-            uri: utData?.imgs,
-          }}
-        />
+        {utData?.imgs === '' ? null : (
+          <StyledImage
+            className="rounded-lg w-full h-full"
+            source={{
+              uri: utData?.imgs,
+            }}
+          />
+        )}
+
         <StyledText className="text-xl uppercase text-white">
           {utData?.title}
         </StyledText>
@@ -83,7 +86,7 @@ const OrderRow = ({rowData, index}: Props) => {
               }}>
               <QRCode
                 value={
-                  rowData?.status === 20
+                  rowData?.status === 10
                     ? JSON.stringify({
                         vid: rowData?.view_id,
                         method: 'checkOut',

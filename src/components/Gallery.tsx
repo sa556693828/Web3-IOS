@@ -14,7 +14,7 @@ import {NFTData} from './NFTPage';
 import {useStorage} from '../hooks/useStorge';
 import useOrder from '../hooks/useOrder';
 import OrderRow from './OrderRow';
-import {ArrowBigLeft} from 'lucide-react-native';
+import {ArrowBigLeft, RotateCcw} from 'lucide-react-native';
 
 const Gallery = () => {
   const userVID = useStorage('userVid');
@@ -28,7 +28,7 @@ const Gallery = () => {
   const StyledImage = styled(Image);
   const StyledButton = styled(Button);
   const StyledText = styled(Text);
-
+  const [refreshing, setRefreshing] = React.useState(false);
   const provider = new ethers.providers.JsonRpcProvider(
     'https://eth-goerli.g.alchemy.com/v2/rF-18JXiZ8TUtMsk0VUI1ppUq6gDzt9m',
   );
@@ -80,13 +80,13 @@ const Gallery = () => {
     getUser(userVid);
     getAccount(userVid);
     getUserOrders('utility');
-  }, [userVid]);
+  }, [userVid, refreshing]);
 
   useEffect(() => {
     if (data && success && data?.wallet_address) {
       getNFTs(data.wallet_address);
     }
-  }, [data, success, data?.wallet_address]);
+  }, [data, success, data?.wallet_address, refreshing]);
 
   const NFTSection = () => {
     if (loading) {
@@ -124,11 +124,18 @@ const Gallery = () => {
   if (orderMode) {
     return (
       <StyledBox className="flex items-start w-full">
-        <StyledButton
-          className={`w-full flex items-start justify-start text-start bg-transparent p-0`}
-          onPress={() => setOrderMode(false)}>
-          <ArrowBigLeft color="white" />
-        </StyledButton>
+        <StyledBox className="flex flex-row space-x-6 items-center">
+          <StyledButton
+            className={`flex items-start justify-start text-start bg-transparent p-0`}
+            onPress={() => setOrderMode(false)}>
+            <ArrowBigLeft color="white" />
+          </StyledButton>
+          <StyledButton
+            className={`w-full flex items-start justify-start text-start bg-transparent p-0 pt-[2px]`}
+            onPress={() => setRefreshing(!refreshing)}>
+            <RotateCcw color="white" size="20" />
+          </StyledButton>
+        </StyledBox>
         <FlatList
           data={orderList && orderList.length > 0 ? orderList : []}
           renderItem={renderItem}
