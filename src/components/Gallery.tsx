@@ -15,6 +15,7 @@ import {useStorage} from '../hooks/useStorge';
 import useOrder from '../hooks/useOrder';
 import OrderRow from './OrderRow';
 import {ArrowBigLeft, RotateCcw} from 'lucide-react-native';
+import OrderModal from './OrderModal';
 
 const Gallery = () => {
   const userVID = useStorage('userVid');
@@ -76,11 +77,19 @@ const Gallery = () => {
       setLoading(false);
     }
   };
+  const trigger = () => {
+    setRefreshing(!refreshing);
+    setOrderMode(false);
+  };
   useEffect(() => {
     getUser(userVid);
     getAccount(userVid);
     getUserOrders('utility');
   }, [userVid, refreshing]);
+
+  useEffect(() => {
+    getUserOrders('utility');
+  }, [refreshing]);
 
   useEffect(() => {
     if (data && success && data?.wallet_address) {
@@ -98,56 +107,40 @@ const Gallery = () => {
     }
     return (
       <StyledBox className="w-[47%] h-44 rounded-lg">
-        <StyledButton
-          className="bg-transparent w-full h-full p-0"
-          // onPress={() => }>
-          onPress={() => {
-            setOrderMode(true);
-          }}>
-          {NFTData.image && (
+        {NFTData.image ? (
+          <StyledButton
+            className="bg-transparent w-full h-full p-0"
+            onPress={() => {
+              setOrderMode(true);
+            }}>
             <StyledImage
               className="rounded-lg w-full h-full"
               source={{
                 uri: `${NFTData.image}`,
               }}
             />
-          )}
-        </StyledButton>
+          </StyledButton>
+        ) : (
+          <StyledButton
+            className="bg-transparent w-full h-full p-0"
+            onPress={() => setRefreshing(!refreshing)}>
+            <RotateCcw color="white" size="50" />
+          </StyledButton>
+        )}
       </StyledBox>
     );
   };
-  const renderItem = ({item, index}: any) => (
-    <StyledBox className="">
-      <OrderRow rowData={item} index={index} />
-    </StyledBox>
-  );
-  if (orderMode) {
-    return (
-      <StyledBox className="flex items-start w-full">
-        <StyledBox className="flex flex-row space-x-6 items-center">
-          <StyledButton
-            className={`flex items-start justify-start text-start bg-transparent p-0`}
-            onPress={() => setOrderMode(false)}>
-            <ArrowBigLeft color="white" />
-          </StyledButton>
-          <StyledButton
-            className={`w-full flex items-start justify-start text-start bg-transparent p-0 pt-[2px]`}
-            onPress={() => setRefreshing(!refreshing)}>
-            <RotateCcw color="white" size="20" />
-          </StyledButton>
-        </StyledBox>
-        <FlatList
-          data={orderList && orderList.length > 0 ? orderList : []}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-        />
-      </StyledBox>
-    );
-  }
+
   return (
     <StyledBox className="flex flex-row flex-wrap gap-2">
       {NFTSection()}
       <StyledBox className="w-[47%] h-44 bg-transparent border border-white/20 rounded-lg" />
+      <OrderModal
+        showModal={orderMode}
+        setShowModal={setOrderMode}
+        data={orderList && orderList.length > 0 ? orderList : []}
+        trigger={trigger}
+      />
     </StyledBox>
   );
 };

@@ -43,7 +43,7 @@ const NFTPage = () => {
   const {getHistory, historyList} = useHistory();
   const {getUtilities, data: utList} = useUtility();
   const {getAccount, accountData} = useLoginAccount();
-  const {data: orderList, getUserOrders} = useOrder();
+  const {data: orderList, getUserOrders, loading: orderLoading} = useOrder();
   const {getUser, data, success} = useUser();
   const StyledBox = styled(Box);
   const StyledButton = styled(Button);
@@ -179,19 +179,23 @@ const NFTPage = () => {
     }
   }, [data, success, data?.wallet_address, refreshing]);
   useEffect(() => {
-    if (orderList && orderList.length > 0) {
-      const order = orderList?.find((order: any) => {
-        if (order?.status === 10) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-      setWaiting(order);
+    if (orderList && orderLoading) {
+      try {
+        const order = orderList?.find((order: any) => {
+          if (order?.status === 10) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        setWaiting(order);
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       setWaiting(false);
     }
-  }, [orderList]);
+  }, [orderList, orderLoading]);
 
   useEffect(() => {
     if (historyList && utList && historyList.length > 0) {
