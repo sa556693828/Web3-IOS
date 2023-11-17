@@ -11,6 +11,7 @@ import {styled} from 'nativewind';
 import {useStorage} from '../hooks/useStorge';
 import QRCode from 'react-native-qrcode-svg';
 import useUtility from '../hooks/useUtility';
+import {UserCheck, UserX} from 'lucide-react-native';
 
 interface Props {
   rowData: any;
@@ -54,20 +55,18 @@ const OrderRow = ({rowData, index}: Props) => {
 
       <StyledBox className="flex w-1/4 justify-center">
         <StyledButton
-          className={`rounded-lg h-16 w-full flex items-center justify-center text-center ${
-            rowData?.status === 20 ? 'bg-white/40' : 'bg-white'
-          }`}
+          className={`rounded-lg h-16 w-full flex items-center justify-center text-center bg-transparent`}
           disabled={rowData?.status === 20}
           onPress={() => setOpen(true)}>
-          <StyledText className="text-black text-xs font-medium text-center uppercase">
-            {rowData?.status < 10
-              ? 'check in'
-              : rowData?.status === 10
-              ? 'check out'
-              : rowData?.status === 20
-              ? 'finish'
-              : 'fix'}
-          </StyledText>
+          {rowData?.status < 10 ? (
+            <UserCheck color="white" size={30} />
+          ) : rowData?.status === 10 ? (
+            <UserX color="white" size={30} />
+          ) : rowData?.status === 20 ? (
+            <UserCheck color="white" className="opacity-50" size={30} />
+          ) : (
+            'fix'
+          )}
         </StyledButton>
       </StyledBox>
       {open && (

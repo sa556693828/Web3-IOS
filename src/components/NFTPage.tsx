@@ -43,7 +43,7 @@ const NFTPage = () => {
   const {getHistory, historyList} = useHistory();
   const {getUtilities, data: utList} = useUtility();
   const {getAccount, accountData} = useLoginAccount();
-  const {data: orderList, getUserOrders, loading: orderLoading} = useOrder();
+  const {data: orderList, getUserOrders, success: orderSuccess} = useOrder();
   const {getUser, data, success} = useUser();
   const StyledBox = styled(Box);
   const StyledButton = styled(Button);
@@ -165,12 +165,19 @@ const NFTPage = () => {
     setShowModal(false);
   };
 
+  //every 5 seconds getOrder
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getUserOrders('utility');
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [userVid, refreshing]);
+
   useEffect(() => {
     getUser(userVid);
     getAccount(userVid);
     getHistory(userVid);
     getUtilities();
-    getUserOrders('utility');
   }, [userVid, refreshing]);
 
   useEffect(() => {
@@ -179,7 +186,7 @@ const NFTPage = () => {
     }
   }, [data, success, data?.wallet_address, refreshing]);
   useEffect(() => {
-    if (orderList && orderLoading) {
+    if (orderSuccess) {
       try {
         const order = orderList?.find((order: any) => {
           if (order?.status === 10) {
@@ -192,10 +199,8 @@ const NFTPage = () => {
       } catch (error) {
         console.log(error);
       }
-    } else {
-      setWaiting(false);
     }
-  }, [orderList, orderLoading]);
+  }, [orderList, orderSuccess]);
 
   useEffect(() => {
     if (historyList && utList && historyList.length > 0) {
