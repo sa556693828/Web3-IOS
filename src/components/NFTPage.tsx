@@ -40,7 +40,7 @@ const NFTPage = () => {
   const [userVid, setUserVid] = userVID;
   const UserTOKEN = useStorage('userToken');
   const [userToken, setUserToken] = UserTOKEN;
-  const {getHistory, historyList} = useHistory();
+  const {getHistory, historyList, success: HistorySuccess} = useHistory();
   const {getUtilities, data: utList} = useUtility();
   const {getAccount, accountData} = useLoginAccount();
   const {data: orderList, getUserOrders, success: orderSuccess} = useOrder();
@@ -300,8 +300,9 @@ const NFTPage = () => {
         }>
         <StyledButton
           className="justify-center items-center flex flex-col bg-transparent"
+          disabled={!HistorySuccess}
           onPress={() => {
-            setShowModal(true);
+            setShowModal(!showModal);
             setDisBounce(false);
           }}>
           {historyLoading ? (

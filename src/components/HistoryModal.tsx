@@ -51,7 +51,7 @@ const HistoryModal = ({
       className="bg-black"
       visible={showModal}
       onRequestClose={() => {
-        setShowModal(false);
+        setShowModal(!showModal);
         setDisBounce(true);
       }}
       animationType="slide"
