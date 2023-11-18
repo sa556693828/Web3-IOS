@@ -62,6 +62,7 @@ const NFTPage = () => {
   const [index, setIndex] = useState(0);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [waiting, setWaiting] = useState(false);
+  const [disBounce, setDisBounce] = useState(true);
   const [currentHistory, setCurrentHistory] = useState<historyList>({
     name: '',
     create_time: '',
@@ -167,11 +168,13 @@ const NFTPage = () => {
 
   //every 5 seconds getOrder
   useEffect(() => {
-    const interval = setInterval(() => {
-      getUserOrders('utility');
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [userVid, refreshing]);
+    if (disBounce) {
+      const interval = setInterval(() => {
+        getUserOrders('utility');
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [userVid, refreshing, disBounce]);
 
   useEffect(() => {
     getUser(userVid);
@@ -297,7 +300,10 @@ const NFTPage = () => {
         }>
         <StyledButton
           className="justify-center items-center flex flex-col bg-transparent"
-          onPress={() => setShowModal(true)}>
+          onPress={() => {
+            setShowModal(true);
+            setDisBounce(false);
+          }}>
           {historyLoading ? (
             <Spinner color="$white" />
           ) : (
@@ -318,28 +324,9 @@ const NFTPage = () => {
         setShowModal={setShowModal}
         data={history}
         changeData={changeHistory}
+        setDisBounce={setDisBounce}
       />
     </StyledBox>
   );
 };
-const styles = StyleSheet.create({
-  slide1: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#9DD6EB',
-  },
-  slide2: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#97CAE5',
-  },
-  slide3: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#92BBD9',
-  },
-});
 export default NFTPage;

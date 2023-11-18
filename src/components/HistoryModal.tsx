@@ -10,6 +10,7 @@ interface HistoryModalProps {
   setShowModal: (showModal: boolean) => void;
   data: historyList[];
   changeData: (index: number) => void;
+  setDisBounce: (disBounce: boolean) => void;
 }
 
 const HistoryModal = ({
@@ -17,6 +18,7 @@ const HistoryModal = ({
   setShowModal,
   data,
   changeData,
+  setDisBounce,
 }: HistoryModalProps) => {
   const StyledBox = styled(Box);
   const StyledBg = styled(LinearGradient);
@@ -48,7 +50,10 @@ const HistoryModal = ({
     <StyledModal
       className="bg-black"
       visible={showModal}
-      onRequestClose={() => setShowModal(false)}
+      onRequestClose={() => {
+        setShowModal(false);
+        setDisBounce(true);
+      }}
       animationType="slide"
       presentationStyle="pageSheet">
       <StyledBg
